@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\{{modelName}};
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class {{modelName}}Controller extends Controller {
+
+    public function index() {
+
+        ${{modelNamePluralLowerCase}} = {{modelName}}::where('loja_id', Auth::user()->loja_ativa)->get();
+
+        foreach (${{modelNamePluralLowerCase}} as ${{modelNameSingularLowerCase}}) {
+            $modelViews[] = $this->show(${{modelNameSingularLowerCase}});
+        }
+
+        ${{modelNameSingularLowerCase}}Blank = new {{modelName}};
+
+        return view('{{modelName}}.index')
+               ->with('{{modelNamePluralLowerCase}}', count(${{modelNamePluralLowerCase}}) ? $modelViews : [])
+               ->with('{{modelNameSingularLowerCase}}Blank', ${{modelNameSingularLowerCase}}Blank);
+    }
+
+    // public function create(Request $request) {}
+
+    public function store(Request $request, {{modelName}} ${{modelNameSingularLowerCase}}) {
+        
+        ${{modelNameSingularLowerCase}}->fill($request->{{modelNameSingularLowerCase}});
+        # ${{modelNameSingularLowerCase}}->loja_id = Auth::user()->loja_ativa;
+        ${{modelNameSingularLowerCase}}->save();
+        return $this->index();
+    }
+
+    public function show({{modelName}} ${{modelNameSingularLowerCase}}) {
+
+        return view('{{modelName}}.show')->with('{{modelNameSingularLowerCase}}', ${{modelNameSingularLowerCase}});
+    }
+
+    // public function edit({{modelName}} ${{modelNameSingularLowerCase}}) {}
+
+    public function update(Request $request, {{modelName}} ${{modelNameSingularLowerCase}}) {
+
+        ${{modelNameSingularLowerCase}}->update($request->{{modelNameSingularLowerCase}});
+        return redirect()->route('{{modelNamePluralLowerCase}}.index');
+    }
+
+    public function destroy({{modelName}} ${{modelNameSingularLowerCase}}) {
+
+        ${{modelNameSingularLowerCase}}->delete();
+        return redirect()->route('{{modelNamePluralLowerCase}}.index');
+    }
+}

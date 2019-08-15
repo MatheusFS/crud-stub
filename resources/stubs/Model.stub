@@ -1,0 +1,10 @@
+<?php
+
+namespace App;
+
+class {{modelName}} extends Model2 {
+
+    protected $guarded = ['id'];
+    protected $fillable = [];
+    public $editable = []; // 'nome' => 'Nome'
+}
