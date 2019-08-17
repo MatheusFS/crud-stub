@@ -34,7 +34,7 @@ class CrudGeneratorCommand extends Command {
     protected function model($name) {
 
         $modelTemplate = str_replace(
-            ['{{modelName}}'],
+            ['{{Model}}'],
             [$name],
             $this->getStub('Model')
         );
@@ -46,9 +46,9 @@ class CrudGeneratorCommand extends Command {
 
         $controllerTemplate = str_replace(
             [
-                '{{modelName}}',
-                '{{modelNamePluralLowerCase}}',
-                '{{modelNameSingularLowerCase}}'
+                '{{Model}}',
+                '{{models}}',
+                '{{model}}'
             ],
             [
                 $name,
@@ -64,7 +64,7 @@ class CrudGeneratorCommand extends Command {
     protected function request($name) {
 
         $requestTemplate = str_replace(
-            ['{{modelName}}'],
+            ['{{Model}}'],
             [$name],
             $this->getStub('Request')
         );
@@ -79,8 +79,8 @@ class CrudGeneratorCommand extends Command {
 
         $viewIndexTemplate = str_replace(
             [
-                '{{modelNamePluralLowerCase}}',
-                '{{modelNameSingularLowerCase}}'
+                '{{models}}',
+                '{{model}}'
             ],
             [
                 strtolower(str_plural($name)),
@@ -91,8 +91,8 @@ class CrudGeneratorCommand extends Command {
 
         $viewShowTemplate = str_replace(
             [
-                '{{modelNamePluralLowerCase}}',
-                '{{modelNameSingularLowerCase}}'
+                '{{models}}',
+                '{{model}}'
             ],
             [
                 strtolower(str_plural($name)),

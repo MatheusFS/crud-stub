@@ -2,53 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use App\{{modelName}};
+use App\{{Model}};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class {{modelName}}Controller extends Controller {
+class {{Model}}Controller extends Controller {
 
-    public function index() {
+    public function index(Request $request) {
 
-        ${{modelNamePluralLowerCase}} = {{modelName}}::where('loja_id', Auth::user()->loja_ativa)->get();
+        /* Concat ',ghost' to $request->mods (?mods=) */
+        $request->replace(['mods' => $request->input('mods').',ghost']);
 
-        foreach (${{modelNamePluralLowerCase}} as ${{modelNameSingularLowerCase}}) {
-            $modelViews[] = $this->show(${{modelNameSingularLowerCase}});
+        /* Get all records available in the database.
+        Can be filtered with where()
+        ex: {{Model}}::where('user_id', Auth::user()->id)->get(); */
+        ${{models}} = {{Model}}::all();
+        
+        /* Loop through records assigning its - show() rendered - views to an array */
+        foreach (${{models}} as ${{model}}) {
+            $views[] = $this->show($produto, $request);
         }
 
-        ${{modelNameSingularLowerCase}}Blank = new {{modelName}};
-
-        return view('{{modelName}}.index')
-               ->with('{{modelNamePluralLowerCase}}', count(${{modelNamePluralLowerCase}}) ? $modelViews : [])
-               ->with('{{modelNameSingularLowerCase}}Blank', ${{modelNameSingularLowerCase}}Blank);
+        return view('{{Model}}.index') // Return new index view
+                ->with('{{models}}', ${{models}}) // with the records
+                ->with('{{model}}_novo', new {{Model}}()) // a new instance for user insertion
+                ->with('views', $views); // the views array
     }
 
-    // public function create(Request $request) {}
+    public function show(Produto $produto, Request $request) {
 
-    public function store(Request $request, {{modelName}} ${{modelNameSingularLowerCase}}) {
+        $mods = $request->has('mods') ? explode(',', $request->input('mods')) : []; // Gets all request modifiers
+        foreach($mods as $modifier){$mods[$modifier] = 1;} // Format to apply them in dinamic view
         
-        ${{modelNameSingularLowerCase}}->fill($request->{{modelNameSingularLowerCase}});
-        # ${{modelNameSingularLowerCase}}->loja_id = Auth::user()->loja_ativa;
-        ${{modelNameSingularLowerCase}}->save();
+        return view('Produto.show')->with('produto', $produto)->with($mods); // Return view to index() array
+    }
+
+    public function store(Request $request, {{Model}} ${{model}}) {
+        
+        ${{model}}->fill($request->{{model}});
+        ${{model}}->save();
         return $this->index();
     }
 
-    public function show({{modelName}} ${{modelNameSingularLowerCase}}) {
+    public function update(Request $request, {{Model}} ${{model}}) {
 
-        return view('{{modelName}}.show')->with('{{modelNameSingularLowerCase}}', ${{modelNameSingularLowerCase}});
+        ${{model}}->update($request->{{model}});
+        return redirect()->route('{{models}}.index');
     }
 
-    // public function edit({{modelName}} ${{modelNameSingularLowerCase}}) {}
+    public function destroy({{Model}} ${{model}}) {
 
-    public function update(Request $request, {{modelName}} ${{modelNameSingularLowerCase}}) {
-
-        ${{modelNameSingularLowerCase}}->update($request->{{modelNameSingularLowerCase}});
-        return redirect()->route('{{modelNamePluralLowerCase}}.index');
-    }
-
-    public function destroy({{modelName}} ${{modelNameSingularLowerCase}}) {
-
-        ${{modelNameSingularLowerCase}}->delete();
-        return redirect()->route('{{modelNamePluralLowerCase}}.index');
+        ${{model}}->delete();
+        return redirect()->route('{{models}}.index');
     }
 }
