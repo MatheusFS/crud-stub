@@ -17,6 +17,8 @@ class {{Model}}Controller extends Controller {
         Can be filtered with where()
         ex: {{Model}}::where('user_id', Auth::user()->id)->get(); */
         ${{models}} = {{Model}}::all();
+
+        $views = array();
         
         /* Loop through records assigning its - show() rendered - views to an array */
         foreach (${{models}} as ${{model}}) {
